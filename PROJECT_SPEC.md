@@ -80,9 +80,11 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 
 **Later in session:** deployed live (CI green, tests pass in pipeline); Tim confirmed all 3 games work on device; built and shipped Patches (Shikaku) — random rectangle partition generator, exact-cover uniqueness solver, drag-to-draw UI with tap-to-remove. All four PRD Phase 1 games now live (36 generator tests passing).
 
+**Even later:** Patches refined per Tim's feedback (no 1-squares ever; LinkedIn-style shape hints on clues — square/wide/tall glyphs enforced by solver and UI). Phase 2 shipped: Tango (Takuzu, 4x4→6x6, =/× links), Picture Cross (mini nonogram, 12 curated 5x5 pixel pictures with name reveal, random 7x7 at L4+), Wordy (kid Wordle: 3-letter L1 → 5-letter L4+, ~500 curated kid words, any guess accepted, extra rows past 6 cost a star instead of failing, physical keyboard support). 65 tests passing; deployed live.
+
 **Open items for next session:**
-- Play-test Patches on the touchscreen Chromebook (drag feel)
-- Phase 2 games when ready: Tango, Mini Nonogram, Kid Wordle
+- 7 games/day may be too many for one sitting — consider disabling some via parent panel or building the PRD's rotating-subset option
+- Play-test new games on the touchscreen Chromebook
 - Consider PWA install flow check on Chromebook
 
 **Deployed:** live at https://ezedpzed.github.io/lucas-daily-puzzles/ (repo github.com/ezedpzed/lucas-daily-puzzles, auto-deploys from main via Actions)
