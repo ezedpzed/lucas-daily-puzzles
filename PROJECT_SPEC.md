@@ -80,9 +80,10 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 - Visual browser check not done (cli-chrome extension needs manual re-load; app verified via build/tests/HTTP only)
 
 **Open items for next session:**
-- Tim: create public repo at github.com/ezedpzed (suggested name `lucas-daily-puzzles`), push, enable Pages → Source: GitHub Actions
 - Play-test all three games on the touchscreen Chromebook; tune touch targets if needed
 - Build Patches; consider PWA install flow check on Chromebook
+
+**Deployed:** live at https://ezedpzed.github.io/lucas-daily-puzzles/ (repo github.com/ezedpzed/lucas-daily-puzzles, auto-deploys from main via Actions)
 
 **Decisions made:**
 - Launch with 3 of the 4 games (Patches deferred) to be demo-ready in one day
