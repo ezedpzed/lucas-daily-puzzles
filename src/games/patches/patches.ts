@@ -10,9 +10,19 @@ export interface Rect {
   c1: number
 }
 
+export type Shape = 'square' | 'wide' | 'tall'
+
 export interface Clue {
   cell: number
   size: number
+  /** Optional shape hint shown on the clue (like LinkedIn's Patches). */
+  shape?: Shape
+}
+
+export function shapeOf(r: Rect): Shape {
+  const h = r.r1 - r.r0 + 1
+  const w = r.c1 - r.c0 + 1
+  return h === w ? 'square' : w > h ? 'wide' : 'tall'
 }
 
 export interface PatchesPuzzle {
@@ -57,34 +67,45 @@ function partition(n: number, maxA: number, rng: Rng): Rect[] {
     const h = rect.r1 - rect.r0 + 1
     const w = rect.c1 - rect.c0 + 1
     const area = h * w
+    // splitting a 1-wide strip shorter than 4 would create a 1x1 piece — never allowed
     const canSplit = h > 1 || w > 1
+    const mustAccept = !canSplit || (Math.min(h, w) === 1 && Math.max(h, w) < 4)
     // keep pieces of 2..maxA with some randomness so sizes vary
-    if (!canSplit || (area <= maxA && (area <= 2 || rng() < 0.45))) {
+    if (mustAccept || (area <= maxA && (area <= 2 || rng() < 0.45))) {
       out.push(rect)
       continue
     }
-    // split the longer side (random tie-break) at a random line
+    // split the longer side (random tie-break) at a random line;
+    // 1-wide strips split away from the ends so no 1x1 piece can appear
     const splitRows = h === w ? rng() < 0.5 : h > w
     if (splitRows) {
-      const at = rect.r0 + 1 + randInt(rng, h - 1)
+      const lo = w === 1 ? 2 : 1
+      const hi = w === 1 ? h - 2 : h - 1
+      const at = rect.r0 + lo + randInt(rng, hi - lo + 1)
       stack.push({ ...rect, r1: at - 1 }, { ...rect, r0: at })
     } else {
-      const at = rect.c0 + 1 + randInt(rng, w - 1)
+      const lo = h === 1 ? 2 : 1
+      const hi = h === 1 ? w - 2 : w - 1
+      const at = rect.c0 + lo + randInt(rng, hi - lo + 1)
       stack.push({ ...rect, c1: at - 1 }, { ...rect, c0: at })
     }
   }
   return out
 }
 
-/** All rectangles of a given area that contain `cell` and no other clue cell. */
-function candidateRects(n: number, cell: number, size: number, clueCells: Set<number>): Rect[] {
+/** All rectangles of a given area/shape that contain `cell` and no other clue cell. */
+function candidateRects(n: number, clue: Clue, clueCells: Set<number>): Rect[] {
   const out: Rect[] = []
+  const { cell, size, shape } = clue
   const cr = Math.floor(cell / n)
   const cc = cell % n
   for (let h = 1; h <= size; h++) {
     if (size % h !== 0) continue
     const w = size / h
     if (h > n || w > n) continue
+    if (shape === 'square' && h !== w) continue
+    if (shape === 'wide' && w <= h) continue
+    if (shape === 'tall' && h <= w) continue
     for (let r0 = Math.max(0, cr - h + 1); r0 <= cr && r0 + h - 1 < n; r0++) {
       for (let c0 = Math.max(0, cc - w + 1); c0 <= cc && c0 + w - 1 < n; c0++) {
         const rect: Rect = { r0, c0, r1: r0 + h - 1, c1: c0 + w - 1 }
@@ -104,7 +125,7 @@ function candidateRects(n: number, cell: number, size: number, clueCells: Set<nu
 
 export function countPatchesSolutions(n: number, clues: Clue[], cap = 2): number {
   const clueCells = new Set(clues.map((c) => c.cell))
-  const cands = clues.map((c) => candidateRects(n, c.cell, c.size, clueCells))
+  const cands = clues.map((c) => candidateRects(n, c, clueCells))
   const total = n * n
   const covered = new Array<boolean>(total).fill(false)
   const used = new Array<boolean>(clues.length).fill(false)
@@ -160,10 +181,14 @@ export function generatePatches(seed: string, level: number): PatchesPuzzle {
   for (let attempt = 0; attempt < 300; attempt++) {
     const rng = makeRng(`${seed}-a${attempt}`)
     const rects = partition(n, maxPiece(level), rng)
-    // a clue in a random cell of each rectangle
+    if (rects.some((r) => rectArea(r) === 1)) continue // no "1" patches, ever
+    // a clue in a random cell of each rectangle; some clues carry a shape hint
+    const pShape = level <= 2 ? 0.6 : level <= 4 ? 0.4 : 0.25
     const clues: Clue[] = rects.map((rect) => {
       const cells = rectCells(rect, n)
-      return { cell: cells[randInt(rng, cells.length)], size: rectArea(rect) }
+      const clue: Clue = { cell: cells[randInt(rng, cells.length)], size: rectArea(rect) }
+      if (rng() < pShape) clue.shape = shapeOf(rect)
+      return clue
     })
     if (countPatchesSolutions(n, clues) === 1) {
       return { n, clues, solution: rects }

@@ -7,6 +7,12 @@ import { SUDOKU_MAX_LEVEL } from './sudoku/sudoku'
 import { QUEENS_MAX_LEVEL } from './queens/queens'
 import { ZIP_MAX_LEVEL } from './zip/zip'
 import { PATCHES_MAX_LEVEL } from './patches/patches'
+import TangoBoard from './tango/TangoBoard'
+import NonogramBoard from './nonogram/NonogramBoard'
+import WordyBoard from './wordy/WordyBoard'
+import { TANGO_MAX_LEVEL } from './tango/tango'
+import { NONOGRAM_MAX_LEVEL } from './nonogram/nonogram'
+import { WORDY_MAX_LEVEL } from './wordy/wordy'
 
 export const GAMES: GameDef[] = [
   {
@@ -60,6 +66,45 @@ export const GAMES: GameDef[] = [
     ],
     maxLevel: QUEENS_MAX_LEVEL,
     Board: QueensBoard,
+  },
+  {
+    id: 'tango',
+    name: 'Tango',
+    emoji: '🌗',
+    tagline: 'Balance the suns and moons',
+    howTo: [
+      'Fill the grid with ☀️ and 🌙 — every row and column gets the same number of each.',
+      'Never three of the same in a row.',
+      'Squares joined by = must match; squares joined by × must be different.',
+    ],
+    maxLevel: TANGO_MAX_LEVEL,
+    Board: TangoBoard,
+  },
+  {
+    id: 'nonogram',
+    name: 'Picture Cross',
+    emoji: '🖼️',
+    tagline: 'Fill squares to reveal a picture',
+    howTo: [
+      'The numbers show runs of filled squares in that row or column, in order.',
+      'A gap of at least one empty square sits between runs.',
+      'Tap to fill a square, tap again for ✕ (definitely empty). Finish to reveal the picture!',
+    ],
+    maxLevel: NONOGRAM_MAX_LEVEL,
+    Board: NonogramBoard,
+  },
+  {
+    id: 'wordy',
+    name: 'Wordy',
+    emoji: '📝',
+    tagline: 'Guess the secret word',
+    howTo: [
+      'Guess the secret word. After each guess the tiles change color.',
+      '🟩 green = right letter, right spot. 🟨 yellow = right letter, wrong spot.',
+      'You get 6 tries — extra tries are allowed but cost a star.',
+    ],
+    maxLevel: WORDY_MAX_LEVEL,
+    Board: WordyBoard,
   },
 ]
 

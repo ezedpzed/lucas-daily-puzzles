@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameBoardProps } from '../../engine/types'
-import { generatePatches, rectArea, rectCells, rectsOverlap, type Rect } from './patches'
+import { generatePatches, rectArea, rectCells, rectsOverlap, shapeOf, type Rect } from './patches'
 
 interface PatchesState {
   rects: Rect[]
@@ -76,9 +76,11 @@ export default function PatchesBoard({
   }
 
   const commit = (rect: Rect) => {
-    // a valid patch holds exactly one number, and covers exactly that many squares
+    // a valid patch holds exactly one number, covers exactly that many
+    // squares, and matches the clue's shape hint if it has one
     const inside = rectCells(rect, n).filter((cel) => clueAt.has(cel))
-    if (inside.length !== 1 || clues[clueAt.get(inside[0])!].size !== rectArea(rect)) {
+    const clue = inside.length === 1 ? clues[clueAt.get(inside[0])!] : null
+    if (!clue || clue.size !== rectArea(rect) || (clue.shape && clue.shape !== shapeOf(rect))) {
       reject()
       return
     }
@@ -165,11 +167,19 @@ export default function PatchesBoard({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        {Array.from({ length: total }, (_, i) => (
-          <div key={i} data-cell={i} className="patches-cell">
-            {clueAt.has(i) && <span className="patches-clue">{clues[clueAt.get(i)!].size}</span>}
-          </div>
-        ))}
+        {Array.from({ length: total }, (_, i) => {
+          const clue = clueAt.has(i) ? clues[clueAt.get(i)!] : null
+          return (
+            <div key={i} data-cell={i} className="patches-cell">
+              {clue && (
+                <span className="patches-clue">
+                  {clue.size}
+                  {clue.shape && <span className={`shape-glyph shape-${clue.shape}`} />}
+                </span>
+              )}
+            </div>
+          )
+        })}
         {state.rects.map((r, i) => (
           <div
             key={`r${i}`}

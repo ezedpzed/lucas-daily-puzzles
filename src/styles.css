@@ -363,6 +363,171 @@ button {
   border-style: dashed;
 }
 
+/* ---------- Patches shape glyphs ---------- */
+.shape-glyph {
+  display: inline-block;
+  margin-left: 4px;
+  background: var(--muted);
+  border-radius: 2px;
+  vertical-align: middle;
+}
+.shape-glyph.shape-square { width: 9px; height: 9px; }
+.shape-glyph.shape-wide { width: 14px; height: 7px; }
+.shape-glyph.shape-tall { width: 7px; height: 14px; }
+
+/* ---------- Tango ---------- */
+.tango-cell {
+  font-size: 1.3rem;
+}
+.tango-link {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid #7b8a97;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ---------- Picture Cross (nonogram) ---------- */
+.nono-layout {
+  display: grid;
+  width: 100%;
+  gap: 2px;
+  background: #c4cdd4;
+  border: 3px solid #7b8a97;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 2px;
+}
+.nono-clue {
+  background: #eef2f5;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nono-clue-col {
+  flex-direction: column;
+  gap: 0;
+  padding: 4px 0;
+  line-height: 1.15;
+}
+.nono-clue-row {
+  padding: 0 8px;
+  justify-content: flex-end;
+  letter-spacing: 2px;
+}
+.nono-cell {
+  aspect-ratio: 1;
+  border: none;
+  background: var(--card);
+  color: #8595a5;
+  font-size: 0.9rem;
+  padding: 0;
+}
+.nono-cell.filled {
+  background: var(--text);
+}
+.nono-cell.wrong {
+  background: var(--red);
+}
+.nono-reveal {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ---------- Wordy ---------- */
+.wordy-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wordy-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.wordy-tile {
+  width: 52px;
+  height: 52px;
+  border: 2px solid #c4cdd4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: var(--card);
+  text-transform: uppercase;
+}
+.wordy-tile.typed {
+  border-color: #8595a5;
+}
+.wordy-tile.correct {
+  background: #58a35b;
+  border-color: #58a35b;
+  color: #fff;
+}
+.wordy-tile.present {
+  background: #d9a942;
+  border-color: #d9a942;
+  color: #fff;
+}
+.wordy-tile.absent {
+  background: #8595a5;
+  border-color: #8595a5;
+  color: #fff;
+}
+.wordy-reveal {
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 6px;
+  color: var(--green);
+  margin: 0;
+}
+.wordy-kb {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 440px;
+}
+.wordy-kb-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.wordy-key {
+  flex: 1;
+  max-width: 40px;
+  height: 48px;
+  border: none;
+  border-radius: 6px;
+  background: #dde4ea;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.wordy-key.wide {
+  max-width: 56px;
+  flex: 1.4;
+}
+.wordy-key.correct { background: #58a35b; color: #fff; }
+.wordy-key.present { background: #d9a942; color: #fff; }
+.wordy-key.absent { background: #9aa8b5; color: #fff; }
+
 /* ---------- Solved / overlay ---------- */
 .solved-panel {
   text-align: center;
