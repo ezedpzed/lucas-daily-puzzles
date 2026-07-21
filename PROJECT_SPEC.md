@@ -1,12 +1,34 @@
 # Project: Lucas's Daily Puzzles
 
-> Created: 2026-07-21
+> Created: 2026-07-21 · **Live:** https://ezedpzed.github.io/lucas-daily-puzzles/ · **Repo:** https://github.com/ezedpzed/lucas-daily-puzzles
 
 ## Problem Statement
 
 Lucas (Tim's 6-year-old son, a strong reader) loves LinkedIn's daily puzzle games — Mini Sudoku, Patches, Zip, Queens — but there's no kid-appropriate, screen-time-bounded way for him to play them daily. Build a free web app that gives him one fresh, auto-generated puzzle set per day at a difficulty that ramps with his skill.
 
 Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the working context; the PRD is the source of truth for requirements.
+
+## Current Status (2026-07-21)
+
+**Shipped and live.** All 4 Phase 1 games + all 3 Phase 2 games are deployed and playable:
+
+| Game | Based on | Sizes | Notes |
+|---|---|---|---|
+| Mini Sudoku 🔢 | LinkedIn Mini Sudoku | 4×4 → 6×6 | tap cell + number pad |
+| Zip 🐍 | LinkedIn Zip | 5×5 → 6×6 | drag path, waypoints in order |
+| Patches 🧵 | Shikaku | 5×5 → 7×7 | drag rectangles; no 1-squares; shape hints (square/wide/tall) |
+| Queens 👑 | Star Battle (1 star) | 5×5 → 7×7 | tap: blank → ✕ → 👑 |
+| Tango 🌗 | Takuzu | 4×4 → 6×6 | ☀️/🌙 with =/× links |
+| Picture Cross 🖼️ | Nonogram | 5×5 → 7×7 | 12 curated pixel pictures with name reveal at 5×5 |
+| Wordy 📝 | Wordle | 3 → 5 letters | ~500 kid words; extra guesses cost a star, never fails |
+
+Every puzzle is date-seeded and solver-verified to have exactly one solution. 65 vitest generator tests. Pushes to `main` auto-deploy via GitHub Actions (tests run in CI).
+
+**Key URLs/facts for working sessions:**
+- Parent panel: `#/parent`, PIN `1234` (game toggles, difficulty pin, resets, stats)
+- Difficulty auto-ramps: +1 level per 10 hint-free solves; 3+ hints steps the counter back
+- Progress is per-device localStorage; day boundary is local midnight
+- `gh` CLI installed at `~/.local/bin/gh`, authed as ezedpzed
 
 ## Goals
 
@@ -30,25 +52,24 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 
 ## Tech Stack
 
-- Vite + React + TypeScript single-page app, built as an installable PWA (offline-capable)
-- Pure TS puzzle engine per game: `generate(seed, level)`, `validate(state)`, `hint(state)`, `isSolved(state)`
-- localStorage for progress, streaks, difficulty state, and parent-panel config
-- GitHub Pages hosting, deployed via GitHub Actions on push to `main`
-- GitHub account: https://github.com/ezedpzed (repo to be created there)
-- Unit tests on generators/solvers (uniqueness + solvability across levels × seeds)
+- Vite + React + TypeScript SPA, installable PWA (offline via vite-plugin-pwa)
+- Pure TS puzzle engine per game in `src/games/<game>/`: `generate(seed, level)` + solver for uniqueness; React board component per game
+- Shared engine in `src/engine/`: seeded RNG (xmur3+mulberry32), day keys, localStorage meta/day records
+- GitHub Pages hosting, deployed via `.github/workflows/deploy.yml` on push to `main`
+- Vitest generator tests in `src/games/generators.test.ts`
 
-## Scope Snapshot
+## Roadmap
 
-- **Phase 1 (MVP):** app shell (home / daily set / results / celebration), Mini Sudoku, Patches (Shikaku), Zip, Queens (Star Battle), mistake highlighting + hints + undo, hidden gentle timer, streaks/stars, PIN-gated parent panel at `/#/parent`, PWA + Pages deploy
-- **Phase 2:** Tango (Takuzu), Mini Nonogram, Kid Wordle (4-letter words); rotating-subset option; milestone badges
-- **Phase 3 (stretch):** Tangram; QR/code progress export between devices; theming
+- ~~Phase 1: Mini Sudoku, Patches, Zip, Queens + app shell~~ ✅ shipped 2026-07-21
+- ~~Phase 2: Tango, Picture Cross (nonogram), Wordy (kid Wordle)~~ ✅ shipped 2026-07-21
+- **Next up:** rotating daily subset (7 games/day is likely too many for one sitting); milestone badges
+- **Phase 3 (stretch):** Tangram; QR/code progress export between devices; theming; show finished nonogram picture on the solved screen
 
 ## Open Questions
 
-- Repo name (e.g., `lucas-daily-puzzles`) — public repo means the code is visible; fine for a puzzle app but worth a deliberate choice
-- Custom day-boundary time? (PRD says local midnight; could be "after school" if mornings become a fight)
-- Which game to build first — plan is Mini Sudoku (his favorite, simplest to verify)
-- PWA install flow on his Chromebook — confirm it works nicely as a home-screen/shelf app
+- Rotating subset vs. manually disabling games in the parent panel — Tim leaning toward rotation, not yet requested
+- Custom day-boundary time? (currently local midnight; could be "after school" if mornings become a fight)
+- PWA install flow on his Chromebook — confirm it works nicely as a shelf app
 
 ## Session Log
 
@@ -61,34 +82,24 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 - Researched additional game candidates; selected Tango, Mini Nonogram, Kid Wordle (Phase 2) and Tangram (Phase 3)
 - Decided architecture: static PWA (Vite + React + TS), date-seeded client-side generation, GitHub Pages, no backend
 
-**Open items for next session:**
-- Create GitHub repo under ezedpzed and scaffold the Vite project
-- Build the app shell + Mini Sudoku generator/solver first
-
 ### Session: 2026-07-21
 
 **Accomplished:**
-- Built the full Phase 1 MVP: Vite + React + TS PWA scaffold, seeded-RNG engine, localStorage progress/streak/difficulty-ramp system
-- Three playable games with unique-solution-verified generators: Mini Sudoku (4x4→6x6), Zip (drag-path, 5x5→6x6), Queens (Star Battle, 5x5→7x7)
-- App shell: daily set with hard stop, hidden gentle timer, stars/confetti/streaks, how-to overlays, PIN-gated parent panel (default PIN 1234) at `#/parent`
-- 27 vitest generator tests passing (uniqueness + validity across seeds × levels); typecheck clean; production build works
-- Fixed Queens generator: uniform random regions almost never yield unique solutions at 6x6/7x7 — switched to deliberately uneven region sizes (tiny regions pin queens), now ~1ms/puzzle with 100% success
-- git repo initialized on `main` with first commit; GitHub Pages deploy workflow at `.github/workflows/deploy.yml`
-
-**In progress / not finished:**
-- Visual browser check not done (cli-chrome extension needs manual re-load; app verified via build/tests/HTTP only)
-
-**Later in session:** deployed live (CI green, tests pass in pipeline); Tim confirmed all 3 games work on device; built and shipped Patches (Shikaku) — random rectangle partition generator, exact-cover uniqueness solver, drag-to-draw UI with tap-to-remove. All four PRD Phase 1 games now live (36 generator tests passing).
-
-**Even later:** Patches refined per Tim's feedback (no 1-squares ever; LinkedIn-style shape hints on clues — square/wide/tall glyphs enforced by solver and UI). Phase 2 shipped: Tango (Takuzu, 4x4→6x6, =/× links), Picture Cross (mini nonogram, 12 curated 5x5 pixel pictures with name reveal, random 7x7 at L4+), Wordy (kid Wordle: 3-letter L1 → 5-letter L4+, ~500 curated kid words, any guess accepted, extra rows past 6 cost a star instead of failing, physical keyboard support). 65 tests passing; deployed live.
-
-**Open items for next session:**
-- 7 games/day may be too many for one sitting — consider disabling some via parent panel or building the PRD's rotating-subset option
-- Play-test new games on the touchscreen Chromebook
-- Consider PWA install flow check on Chromebook
-
-**Deployed:** live at https://ezedpzed.github.io/lucas-daily-puzzles/ (repo github.com/ezedpzed/lucas-daily-puzzles, auto-deploys from main via Actions)
+- Built and deployed the entire app in one day — Phase 1 and Phase 2 complete (see Current Status table)
+- Scaffold + engine: Vite/React/TS PWA, seeded RNG, localStorage progress/streak/auto-ramp, app shell (daily set with hard stop, hidden timer, stars/confetti, how-to overlays, parent panel)
+- Phase 1 games: Mini Sudoku, Zip, Queens shipped first (demo-ready same day); Patches added after Tim confirmed the first three worked on device
+- Patches refined per Tim's feedback: no 1-square patches; LinkedIn-style shape hints on clues, enforced by solver + UI
+- Phase 2 games: Tango, Picture Cross, Wordy
+- Repo pushed to github.com/ezedpzed/lucas-daily-puzzles; Pages enabled via API; CI runs tests then deploys; 65 tests green
+- Installed `gh` CLI (no Homebrew on machine) at `~/.local/bin/gh`, authed as ezedpzed
 
 **Decisions made:**
-- Launch with 3 of the 4 games (Patches deferred) to be demo-ready in one day
-- Queens region generation uses uneven target sizes for uniqueness
+- Queens generator needs deliberately uneven region sizes — uniform random regions almost never give unique solutions at 6×6/7×7
+- Wordy accepts any letters as a guess (no dictionary rejection) and can't be failed — extra rows past 6 cost a star
+- Picture Cross uses curated pixel art at 5×5 for the reveal moment, random boards at 7×7
+
+**Open items for next session:**
+- Decide on rotating daily subset (likely yes) — until then, use parent panel to trim the 7-game set
+- Play-test Tango / Picture Cross / Wordy on the touchscreen Chromebook
+- Check PWA install flow on Chromebook
+- Visual/browser QA pass still pending (cli-chrome extension needs a manual reload on Tim's machine)
