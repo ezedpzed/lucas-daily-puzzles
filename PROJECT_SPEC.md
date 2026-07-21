@@ -64,3 +64,26 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 **Open items for next session:**
 - Create GitHub repo under ezedpzed and scaffold the Vite project
 - Build the app shell + Mini Sudoku generator/solver first
+
+### Session: 2026-07-21
+
+**Accomplished:**
+- Built the full Phase 1 MVP: Vite + React + TS PWA scaffold, seeded-RNG engine, localStorage progress/streak/difficulty-ramp system
+- Three playable games with unique-solution-verified generators: Mini Sudoku (4x4→6x6), Zip (drag-path, 5x5→6x6), Queens (Star Battle, 5x5→7x7)
+- App shell: daily set with hard stop, hidden gentle timer, stars/confetti/streaks, how-to overlays, PIN-gated parent panel (default PIN 1234) at `#/parent`
+- 27 vitest generator tests passing (uniqueness + validity across seeds × levels); typecheck clean; production build works
+- Fixed Queens generator: uniform random regions almost never yield unique solutions at 6x6/7x7 — switched to deliberately uneven region sizes (tiny regions pin queens), now ~1ms/puzzle with 100% success
+- git repo initialized on `main` with first commit; GitHub Pages deploy workflow at `.github/workflows/deploy.yml`
+
+**In progress / not finished:**
+- Patches (Shikaku) — deferred, next game to build
+- Visual browser check not done (cli-chrome extension needs manual re-load; app verified via build/tests/HTTP only)
+
+**Open items for next session:**
+- Tim: create public repo at github.com/ezedpzed (suggested name `lucas-daily-puzzles`), push, enable Pages → Source: GitHub Actions
+- Play-test all three games on the touchscreen Chromebook; tune touch targets if needed
+- Build Patches; consider PWA install flow check on Chromebook
+
+**Decisions made:**
+- Launch with 3 of the 4 games (Patches deferred) to be demo-ready in one day
+- Queens region generation uses uneven target sizes for uniqueness
