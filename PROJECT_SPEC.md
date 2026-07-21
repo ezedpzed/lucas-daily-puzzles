@@ -76,12 +76,14 @@ Full product detail lives in `PRD.md` (v1.0, 2026-07-20) — this spec is the wo
 - git repo initialized on `main` with first commit; GitHub Pages deploy workflow at `.github/workflows/deploy.yml`
 
 **In progress / not finished:**
-- Patches (Shikaku) — deferred, next game to build
 - Visual browser check not done (cli-chrome extension needs manual re-load; app verified via build/tests/HTTP only)
 
+**Later in session:** deployed live (CI green, tests pass in pipeline); Tim confirmed all 3 games work on device; built and shipped Patches (Shikaku) — random rectangle partition generator, exact-cover uniqueness solver, drag-to-draw UI with tap-to-remove. All four PRD Phase 1 games now live (36 generator tests passing).
+
 **Open items for next session:**
-- Play-test all three games on the touchscreen Chromebook; tune touch targets if needed
-- Build Patches; consider PWA install flow check on Chromebook
+- Play-test Patches on the touchscreen Chromebook (drag feel)
+- Phase 2 games when ready: Tango, Mini Nonogram, Kid Wordle
+- Consider PWA install flow check on Chromebook
 
 **Deployed:** live at https://ezedpzed.github.io/lucas-daily-puzzles/ (repo github.com/ezedpzed/lucas-daily-puzzles, auto-deploys from main via Actions)
 
