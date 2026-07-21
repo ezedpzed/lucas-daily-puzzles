@@ -2,6 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { generateSudoku, countSolutions, levelSpec, SUDOKU_MAX_LEVEL } from './sudoku/sudoku'
 import { generateQueens, countQueensSolutions, QUEENS_MAX_LEVEL } from './queens/queens'
 import { generateZip, countZipSolutions, ZIP_MAX_LEVEL } from './zip/zip'
+import {
+  generatePatches,
+  countPatchesSolutions,
+  rectArea,
+  rectCells,
+  PATCHES_MAX_LEVEL,
+} from './patches/patches'
 
 const SEEDS = ['2026-07-21', '2026-07-22', '2026-08-01']
 
@@ -69,6 +76,32 @@ describe('zip generator', () => {
           expect(positions[i]).toBeGreaterThan(positions[i - 1])
         }
         expect(countZipSolutions(p.n, p.waypoints)).toBe(1)
+      })
+    }
+  }
+})
+
+describe('patches generator', () => {
+  for (const level of [1, 3, PATCHES_MAX_LEVEL]) {
+    for (const seed of SEEDS) {
+      it(`level ${level} seed ${seed}: unique exact-cover solution`, () => {
+        const p = generatePatches(`patches-${seed}-L${level}`, level)
+        const total = p.n * p.n
+        // solution rectangles tile the board exactly
+        const covered = new Set<number>()
+        p.solution.forEach((r) => rectCells(r, p.n).forEach((c) => covered.add(c)))
+        expect(covered.size).toBe(total)
+        expect(p.solution.reduce((s, r) => s + rectArea(r), 0)).toBe(total)
+        // each solution rect contains exactly its own clue with matching size
+        expect(p.solution.length).toBe(p.clues.length)
+        p.solution.forEach((r, i) => {
+          const cells = rectCells(r, p.n)
+          const inside = p.clues.filter((c) => cells.includes(c.cell))
+          expect(inside.length).toBe(1)
+          expect(inside[0].cell).toBe(p.clues[i].cell)
+          expect(inside[0].size).toBe(rectArea(r))
+        })
+        expect(countPatchesSolutions(p.n, p.clues)).toBe(1)
       })
     }
   }

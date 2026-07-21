@@ -2,9 +2,11 @@ import type { GameDef } from '../engine/types'
 import SudokuBoard from './sudoku/SudokuBoard'
 import QueensBoard from './queens/QueensBoard'
 import ZipBoard from './zip/ZipBoard'
+import PatchesBoard from './patches/PatchesBoard'
 import { SUDOKU_MAX_LEVEL } from './sudoku/sudoku'
 import { QUEENS_MAX_LEVEL } from './queens/queens'
 import { ZIP_MAX_LEVEL } from './zip/zip'
+import { PATCHES_MAX_LEVEL } from './patches/patches'
 
 export const GAMES: GameDef[] = [
   {
@@ -32,6 +34,19 @@ export const GAMES: GameDef[] = [
     ],
     maxLevel: ZIP_MAX_LEVEL,
     Board: ZipBoard,
+  },
+  {
+    id: 'patches',
+    name: 'Patches',
+    emoji: '🧵',
+    tagline: 'Cut the board into number patches',
+    howTo: [
+      'Divide the whole board into rectangle patches.',
+      'Each patch must contain exactly one number — and cover exactly that many squares.',
+      'Drag to draw a patch. Tap a patch to remove it.',
+    ],
+    maxLevel: PATCHES_MAX_LEVEL,
+    Board: PatchesBoard,
   },
   {
     id: 'queens',

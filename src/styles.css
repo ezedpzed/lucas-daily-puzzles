@@ -325,6 +325,44 @@ button {
   75% { transform: translateX(6px); }
 }
 
+/* ---------- Patches ---------- */
+.patches-grid {
+  position: relative;
+  display: grid;
+  width: 100%;
+  gap: 2px;
+  background: #c4cdd4;
+  border: 3px solid #7b8a97;
+  border-radius: 8px;
+  overflow: hidden;
+  user-select: none;
+}
+.patches-cell {
+  aspect-ratio: 1;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.patches-clue {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text);
+  z-index: 2;
+  position: relative;
+}
+.patches-rect {
+  position: absolute;
+  border: 3px solid rgba(10, 102, 194, 0.85);
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 1;
+}
+.patches-rect.preview {
+  background: rgba(10, 102, 194, 0.15);
+  border-style: dashed;
+}
+
 /* ---------- Solved / overlay ---------- */
 .solved-panel {
   text-align: center;
